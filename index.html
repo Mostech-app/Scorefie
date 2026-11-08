@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quote di valore – Serie A</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f4e8c">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f4f6;--surf:#fff;--ink:#16202b;--mut:#5b6876;--line:#d8dee5;--acc:#1f4e8c;--val:#17824f;--valbg:#e3f4ea;--warn:#8a5a00;--warnbg:#fbf1d6;--neg:#b23a2a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1720;--surf:#18222d;--ink:#e8edf2;--mut:#9aa8b6;--line:#2b3947;--acc:#7fb0ee;--val:#5fd096;--valbg:#173a2a;--warn:#f0c869;--warnbg:#3a3014;--neg:#ff8d7a}}
+:root[data-theme="dark"]{--bg:#0f1720;--surf:#18222d;--ink:#e8edf2;--mut:#9aa8b6;--line:#2b3947;--acc:#7fb0ee;--val:#5fd096;--valbg:#173a2a;--warn:#f0c869;--warnbg:#3a3014;--neg:#ff8d7a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+a{color:var(--acc)}
+h1{font-size:1.9rem;line-height:1.15;margin:.2rem 0 .3rem;font-weight:700}
+h2{font-size:1.15rem;margin:1.6rem 0 .5rem}
+h3{font-size:1rem;margin:1.2rem 0 .4rem;color:var(--mut);font-weight:500}
+.demo{background:var(--warnbg);color:var(--warn);padding:10px 12px;border-radius:6px;font-size:.9rem;margin:0 0 18px}
+.sub{color:var(--mut);margin:0 0 18px}
+.list a{display:block;text-decoration:none;color:inherit;padding:14px 0;border-top:1px solid var(--line)}
+.list a:last-child{border-bottom:1px solid var(--line)}
+.list b{font-size:1.2rem}
+.list span{display:block;color:var(--mut);font-size:.92rem}
+.list .v{color:var(--val);font-weight:700}
+.inputs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+label{display:flex;flex-direction:column;font-size:.85rem;color:var(--mut);gap:4px}
+input{font:inherit;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--surf);color:var(--ink);width:100%}
+input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.an p{font-family:"Source Serif 4",Georgia,serif;line-height:1.65;max-width:68ch;margin:.6rem 0}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.95rem;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--mut);font-size:.82rem}
+tr.val td{background:var(--valbg)}
+tr.val td:first-child{border-left:4px solid var(--val);font-weight:700}
+td.pos{color:var(--val);font-weight:700}
+td.neg{color:var(--neg)}
+.foot{color:var(--mut);font-size:.82rem;margin-top:28px;border-top:1px solid var(--line);padding-top:12px}
+.back{display:inline-block;margin-bottom:10px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const F=n=>{let r=1;for(let i=2;i<=n;i++)r*=i;return r};
+const pois=(k,l)=>Math.exp(-l)*Math.pow(l,k)/F(k);
+const cdf=(k,l)=>{let s=0;for(let i=0;i<=k;i++)s+=pois(i,l);return s};
+const it=x=>String(x).replace(".",",");
+const pc=x=>it((x*100).toFixed(1))+"%";
+const ed=e=>(e>=0?"+":"−")+it(Math.abs(e*100).toFixed(1))+"%";
+const qf=q=>it(q.toFixed(2));
+const G=[
+["Esito 1X2","1",(i,j)=>i>j],["Esito 1X2","X",(i,j)=>i==j],["Esito 1X2","2",(i,j)=>i<j],
+["Doppia chance","1X",(i,j)=>i>=j],["Doppia chance","X2",(i,j)=>i<=j],["Doppia chance","12",(i,j)=>i!=j],
+["Gol","Over 1,5",(i,j)=>i+j>1],["Gol","Over 2,5",(i,j)=>i+j>2],["Gol","Under 2,5",(i,j)=>i+j<3],
+["Gol","Over 3,5",(i,j)=>i+j>3],["Gol","Under 3,5",(i,j)=>i+j<4],
+["Gol","Gol (GG)",(i,j)=>i>0&&j>0],["Gol","No gol (NG)",(i,j)=>i==0||j==0],
+["Multigol","Multigol 1-3",(i,j)=>i+j>=1&&i+j<=3],["Multigol","Multigol 2-4",(i,j)=>i+j>=2&&i+j<=4],["Multigol","Multigol 2-5",(i,j)=>i+j>=2&&i+j<=5],
+["Combo","1 + Over 1,5",(i,j)=>i>j&&i+j>1],["Combo","2 + Over 1,5",(i,j)=>i<j&&i+j>1],
+["Combo","1X + Under 3,5",(i,j)=>i>=j&&i+j<4],["Combo","X2 + Under 3,5",(i,j)=>i<=j&&i+j<4],
+["Combo","GG + Over 2,5",(i,j)=>i>0&&j>0&&i+j>2],["Combo","12 + Over 2,5",(i,j)=>i!=j&&i+j>2]
+];
+function calc(v){
+  const P=[];
+  for(let i=0;i<11;i++)for(let j=0;j<11;j++)P.push([i,j,pois(i,v[0])*pois(j,v[1])]);
+  const r=G.map(([g,l,f])=>({g,l,p:P.reduce((a,x)=>a+(f(x[0],x[1])?x[2]:0),0)}));
+  const ou=(g,L,lam)=>{const c=cdf(Math.floor(L),lam);r.push({g,l:"Over "+it(L),p:1-c},{g,l:"Under "+it(L),p:c})};
+  ou("Corner",9.5,v[2]);ou("Corner",10.5,v[2]);ou("Cartellini",3.5,v[3]);ou("Cartellini",4.5,v[3]);
+  return r;
+}
+let MS=[],AGG="";
+function rows(m){
+  return calc(m.cur).map(r=>{
+    const o=m.quote[r.g+"|"+r.l],q=o?o.q:null;
+    return {...r,q,e:q?r.p*q-1:null,qm:1.05/r.p};
+  });
+}
+const TH=.05;
+function analysis(m,R){
+  const esiti=R.slice(0,3),top=esiti.reduce((a,b)=>b.p>a.p?b:a);
+  const d=top.e===null?"serve controllare il prezzo sul tuo bookmaker (quota minima "+qf(top.qm)+")":top.e>=TH?"quindi il prezzo contiene valore":top.e<=-TH?"quindi il prezzo è troppo basso rispetto al modello":"quindi la quota è in linea con il modello";
+  const f=l=>R.find(r=>r.l===l&&r.g!=="Corner"&&r.g!=="Cartellini")||R.find(r=>r.l===l);
+  const mg=R.filter(r=>r.g==="Multigol").reduce((a,b)=>b.p>a.p?b:a);
+  const c=R.find(r=>r.g==="Corner"&&r.l==="Over 10,5"),k=R.find(r=>r.g==="Cartellini"&&r.l==="Over 4,5");
+  const tot=m.cur[0]+m.cur[1];
+  const vals=R.filter(r=>r.e>=TH).sort((a,b)=>b.e-a.e).slice(0,3);
+  const t=[];
+  t.push(`Per il modello l’esito più probabile è ${top.l} (${pc(top.p)}). ${top.q?`La quota ${qf(top.q)} implica il ${pc(1/top.q)}, `:"La quota non è disponibile, "}${d}.`);
+  t.push(`Ci si aspettano ${it(tot.toFixed(2))} gol in totale (${m.h} ${it(m.cur[0])}, ${m.a} ${it(m.cur[1])}). Over 2,5 vale il ${pc(f("Over 2,5").p)} e il gol di entrambe il ${pc(f("Gol (GG)").p)}. Il multigol più probabile è ${mg.l.replace("Multigol ","")}, al ${pc(mg.p)}.`);
+  t.push(`Corner attesi: ${it(m.cur[2])}, con Over 10,5 al ${pc(c.p)}. Cartellini attesi: ${it(m.cur[3])}, con Over 4,5 al ${pc(k.p)}.`);
+  t.push(vals.length
+    ?`Segnali di valore: ${vals.map(r=>`${r.l} (${r.g.toLowerCase()}) a quota ${qf(r.q)}, edge ${ed(r.e)}`).join("; ")}. Un edge sopra il 15% è più spesso un errore del modello che un’occasione: prima di fidarti controlla formazioni, assenze e arbitro.`
+    :`Nessun mercato supera la soglia del 5% di edge: in questa partita non c’è una scommessa da segnalare.`);
+  return t.map(x=>`<p>${x}</p>`).join("");
+}
+function tables(R){
+  const o={};R.forEach(r=>(o[r.g]=o[r.g]||[]).push(r));
+  return Object.keys(o).map(g=>`<h3>${g}</h3><div class="scroll"><table><thead><tr><th>Mercato</th><th>Prob. modello</th><th>Quota</th><th>Edge</th></tr></thead><tbody>${
+    o[g].map(r=>`<tr class="${r.e>=TH?"val":""}"><td>${r.l}</td><td>${pc(r.p)}</td><td>${r.q?qf(r.q):"—"}</td><td class="${r.e>=TH?"pos":r.e<=-TH?"neg":""}">${r.e===null?"min. "+qf(r.qm):ed(r.e)}</td></tr>`).join("")
+  }</tbody></table></div>`).join("");
+}
+const when=m=>new Date(m.data).toLocaleString("it-IT",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const app=document.getElementById("app");
+const demo=()=>`<p class="demo">Dati aggiornati al ${AGG?new Date(AGG).toLocaleString("it-IT",{dateStyle:"medium",timeStyle:"short"}):"…"}. Le quote sono le migliori disponibili tra i bookmaker dell’API.</p>`;
+const foot=`<p class="foot">Il modello usa gol indipendenti con distribuzione di Poisson, senza correzioni; corner e cartellini sono trattati come un unico totale, quindi la loro variabilità è sottostimata. L’edge è (probabilità × quota) − 1: un valore positivo non garantisce un guadagno. Dove la quota non è disponibile (multigol, combo e altri mercati) la tabella mostra la quota minima per avere il 5% di edge: confrontala con quella del tuo bookmaker. Solo maggiorenni: il gioco può causare dipendenza.</p>`;
+function showList(){
+  app.innerHTML=`<h1>Quote di valore</h1><p class="sub">Serie A, prossime partite</p>${demo()}<div class="list">${MS.map(m=>{
+    const R=rows(m),v=R.filter(r=>r.e>=TH),best=v.reduce((a,r)=>Math.max(a,r.e),0);
+    return `<a href="#${m.id}"><b>${m.h} – ${m.a}</b><span>${when(m)}, gol attesi ${it(m.cur[0])} – ${it(m.cur[1])}</span><span class="${v.length?"v":""}">${v.length?`${v.length} segnali di valore, miglior edge ${ed(best)}`:"Nessun segnale di valore"}</span></a>`}).join("")}</div>${foot}`;
+  window.scrollTo(0,0);
+}
+function showDetail(m){
+  const inp=(l,i,s)=>`<label>${l}<input type="number" inputmode="decimal" step="${s}" min="0.1" max="${i<2?4:20}" value="${m.cur[i]}" data-i="${i}"></label>`;
+  app.innerHTML=`<a class="back" href="#">Tutte le partite</a><h1>${m.h} – ${m.a}</h1><p class="sub">${when(m)}${m.arb?", arbitro "+m.arb:""}</p>${demo()}<h2>Parametri del modello</h2><div class="inputs">${inp("Gol attesi "+m.h,0,.05)}${inp("Gol attesi "+m.a,1,.05)}${inp("Corner attesi",2,.1)}${inp("Cartellini attesi",3,.1)}</div><div id="res"></div>${foot}`;
+  const res=()=>{const R=rows(m);document.getElementById("res").innerHTML=`<h2>Analisi</h2><div class="an">${analysis(m,R)}</div><h2>Mercati</h2>${tables(R)}`};
+  app.querySelectorAll("input").forEach(el=>el.oninput=()=>{const x=parseFloat(el.value);if(x>0&&x<=(+el.dataset.i<2?4:20)){m.cur[+el.dataset.i]=x;res()}});
+  res();window.scrollTo(0,0);
+}
+function route(){const m=MS.find(x=>x.id===location.hash.slice(1));m?showDetail(m):showList()}
+addEventListener("hashchange",route);
+fetch("data/dati.json").then(r=>r.json()).then(d=>{AGG=d.aggiornato;MS=d.partite.map(p=>({id:"p"+p.id,h:p.h,a:p.a,data:p.data,arb:p.arbitro,quote:p.quote||{},me:p.lam,cur:p.lam.slice()}));route()}).catch(()=>{app.innerHTML="<p class=\"demo\">Dati non ancora disponibili: lancia prima l’aggiornamento su GitHub.</p>"});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>
