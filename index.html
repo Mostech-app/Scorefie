@@ -43,6 +43,7 @@ tr.val td{background:var(--valbg)}
 tr.val td:first-child{border-left:4px solid var(--val);font-weight:700}
 td.pos{color:var(--val);font-weight:700}
 td.neg{color:var(--neg)}
+small{color:var(--mut);font-size:.72rem}
 .foot{color:var(--mut);font-size:.82rem;margin-top:28px;border-top:1px solid var(--line);padding-top:12px}
 .back{display:inline-block;margin-bottom:10px}
 </style>
@@ -80,7 +81,7 @@ let MS=[],AGG="";
 function rows(m){
   return calc(m.cur).map(r=>{
     const o=m.quote[r.g+"|"+r.l],q=o?o.q:null;
-    return {...r,q,e:q?r.p*q-1:null,qm:1.05/r.p};
+    return {...r,q,b:o?o.b:null,e:q?r.p*q-1:null,qm:1.05/r.p};
   });
 }
 const TH=.05;
@@ -104,15 +105,15 @@ function analysis(m,R){
 function tables(R){
   const o={};R.forEach(r=>(o[r.g]=o[r.g]||[]).push(r));
   return Object.keys(o).map(g=>`<h3>${g}</h3><div class="scroll"><table><thead><tr><th>Mercato</th><th>Prob. modello</th><th>Quota</th><th>Edge</th></tr></thead><tbody>${
-    o[g].map(r=>`<tr class="${r.e>=TH?"val":""}"><td>${r.l}</td><td>${pc(r.p)}</td><td>${r.q?qf(r.q):"—"}</td><td class="${r.e>=TH?"pos":r.e<=-TH?"neg":""}">${r.e===null?"min. "+qf(r.qm):ed(r.e)}</td></tr>`).join("")
+    o[g].map(r=>`<tr class="${r.e>=TH?"val":""}"><td>${r.l}</td><td>${pc(r.p)}</td><td>${r.q?qf(r.q)+`<br><small>${r.b}</small>`:"—"}</td><td class="${r.e>=TH?"pos":r.e<=-TH?"neg":""}">${r.e===null?"min. "+qf(r.qm):ed(r.e)}</td></tr>`).join("")
   }</tbody></table></div>`).join("");
 }
 const when=m=>new Date(m.data).toLocaleString("it-IT",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
 const app=document.getElementById("app");
-const demo=()=>`<p class="demo">Dati aggiornati al ${AGG?new Date(AGG).toLocaleString("it-IT",{dateStyle:"medium",timeStyle:"short"}):"…"}. Le quote sono le migliori disponibili tra i bookmaker dell’API.</p>`;
+const demo=()=>`<p class="demo">Dati aggiornati al ${AGG?new Date(AGG).toLocaleString("it-IT",{dateStyle:"medium",timeStyle:"short"}):"…"}. Per ogni mercato si mostra la quota migliore tra i bookmaker disponibili (football-data.co.uk e The Odds API). Può avere qualche ora o qualche giorno: controlla sempre la quota sul tuo bookmaker.</p>`;
 const foot=`<p class="foot">Il modello usa gol indipendenti con distribuzione di Poisson, senza correzioni; corner e cartellini sono trattati come un unico totale, quindi la loro variabilità è sottostimata. L’edge è (probabilità × quota) − 1: un valore positivo non garantisce un guadagno. Dove la quota non è disponibile (multigol, combo e altri mercati) la tabella mostra la quota minima per avere il 5% di edge: confrontala con quella del tuo bookmaker. Solo maggiorenni: il gioco può causare dipendenza.</p>`;
 function showList(){
-  app.innerHTML=`<h1>Quote di valore</h1><p class="sub">Serie A, prossime partite</p>${demo()}<div class="list">${MS.map(m=>{
+  app.innerHTML=`<h1>Quote di valore</h1><p class="sub">Serie A, prossime partite</p>${demo()}<div class="list">${MS.length?"":"<p class=\"sub\">Nessuna partita con quote nel file di questa settimana: riprova dopo il prossimo aggiornamento.</p>"}${MS.map(m=>{
     const R=rows(m),v=R.filter(r=>r.e>=TH),best=v.reduce((a,r)=>Math.max(a,r.e),0);
     return `<a href="#${m.id}"><b>${m.h} – ${m.a}</b><span>${when(m)}, gol attesi ${it(m.cur[0])} – ${it(m.cur[1])}</span><span class="${v.length?"v":""}">${v.length?`${v.length} segnali di valore, miglior edge ${ed(best)}`:"Nessun segnale di valore"}</span></a>`}).join("")}</div>${foot}`;
   window.scrollTo(0,0);
