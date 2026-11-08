@@ -1,0 +1,52 @@
+{
+ "h2h": [
+  "AC Milan",
+  "Genoa",
+  "Draw",
+  "Atalanta BC",
+  "Monza",
+  "Como",
+  "Inter Milan",
+  "Fiorentina"
+ ],
+ "totals": [
+  "Over",
+  "Under"
+ ],
+ "h2h_lay": [
+  "AC Milan",
+  "Genoa",
+  "Draw",
+  "Atalanta BC",
+  "Monza",
+  "Como",
+  "Inter Milan",
+  "Fiorentina"
+ ],
+ "alternate_totals": [
+  "Over",
+  "Under"
+ ],
+ "alternate_totals_cards": [
+  "Over",
+  "Under"
+ ],
+ "alternate_totals_corners": [
+  "Over",
+  "Under"
+ ],
+ "btts": [
+  "Yes",
+  "No"
+ ],
+ "double_chance": [
+  "AC Milan or Draw",
+  "Genoa or Draw",
+  "AC Milan or Genoa",
+  "Atalanta BC or Draw",
+  "Monza or Draw",
+  "Atalanta BC or Monza",
+  "Como or Draw",
+  "Inter Milan or Draw"
+ ]
+}
