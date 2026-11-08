@@ -22,4 +22,5 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
           git add data
           git diff --cached --quiet || git commit -m "Aggiorna dati"
+          git pull --rebase
           git push
