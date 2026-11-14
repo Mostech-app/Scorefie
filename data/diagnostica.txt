@@ -1,15 +1,5 @@
 Partite giocate nel file dei risultati: 110
-Righe nel file delle prossime partite: 160, di cui Serie A: 10
+Righe nel file delle prossime partite: 51, di cui Serie A: 0
 Colonne del file delle prossime partite: Div, Date, Time, HomeTeam, AwayTeam, Referee, B365H, B365D, B365A, BFDH, BFDD, BFDA, BVH, BVD, BVA, BWH, BWD, BWA, PPH, PPD, PPA, SKBH, SKBD, SKBA, MaxH, MaxD, MaxA, AvgH, AvgD, AvgA, BFEH, BFED, BFEA, B365>2.5, B365<2.5, Max>2.5, Max<2.5, Avg>2.5, Avg<2.5, BFE>2.5, BFE<2.5, AHh, B365AHH, B365AHA, MaxAHH, MaxAHA, AvgAHH, AvgAHA, BFEAHH, BFEAHA, B365CH, B365CD, B365CA, BFDCH, BFDCD, BFDCA, BVCH, BVCD, BVCA, BWCH, BWCD, BWCA, PPCH, PPCD, PPCA, SKBCH, SKBCD, SKBCA, MaxCH, MaxCD, MaxCA, AvgCH, AvgCD, AvgCA, BFECH, BFECD, BFECA, B365C>2.5, B365C<2.5, MaxC>2.5, MaxC<2.5, AvgC>2.5, AvgC<2.5, BFEC>2.5, BFEC<2.5, AHCh, B365CAHH, B365CAHA, MaxCAHH, MaxCAHA, AvgCAHH, AvgCAHA, BFECAHH, BFECAHA
 The Odds API: sport soccer_italy_serie_a, 20 partite elencate.
-Nessuna corrispondenza su The Odds API per Venezia - Udinese
-Nessuna corrispondenza su The Odds API per Cagliari - Frosinone
-Nessuna corrispondenza su The Odds API per Torino - Lecce
-Nessuna corrispondenza su The Odds API per Parma - Bologna
-Nessuna corrispondenza su The Odds API per Roma - Sassuolo
-Nessuna corrispondenza su The Odds API per Napoli - Lazio
-Nessuna corrispondenza su The Odds API per Genoa - Milan
-Nessuna corrispondenza su The Odds API per Monza - Atalanta
-Nessuna corrispondenza su The Odds API per Inter - Como
-Nessuna corrispondenza su The Odds API per Fiorentina - Juventus
-Crediti The Odds API rimasti: 468
+Crediti The Odds API rimasti: 466
