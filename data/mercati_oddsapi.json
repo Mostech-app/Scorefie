@@ -22,5 +22,31 @@
   "AS Roma",
   "Parma",
   "Napoli"
+ ],
+ "alternate_totals": [
+  "Over",
+  "Under"
+ ],
+ "alternate_totals_cards": [
+  "Over",
+  "Under"
+ ],
+ "alternate_totals_corners": [
+  "Over",
+  "Under"
+ ],
+ "btts": [
+  "Yes",
+  "No"
+ ],
+ "double_chance": [
+  "Cagliari or Draw",
+  "Como or Draw",
+  "Cagliari or Como",
+  "Lazio or Draw",
+  "Lecce or Draw",
+  "Lazio or Lecce",
+  "AS Roma or Draw",
+  "Parma or Draw"
  ]
 }
